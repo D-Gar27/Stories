@@ -36,8 +36,8 @@ import { AiFillHome } from 'react-icons/ai';
 import { BsArrowLeft } from 'react-icons/bs';
 import Head from 'next/head';
 
-const FullStory = ({ story: StoryData }) => {
-  const story = JSON.parse(StoryData);
+const FullStory = ({ story: storyData }) => {
+  const story = JSON.parse(storyData);
   const router = useRouter();
   const { storySlug } = router.query;
 
@@ -188,7 +188,7 @@ const FullStory = ({ story: StoryData }) => {
               <AiFillHome className="text-xl font-bold" />
             </div>
           </Link>
-          {story?.image ? (
+          {story.image ? (
             <Image
               src={story.image}
               width={200}
@@ -368,38 +368,30 @@ const FullStory = ({ story: StoryData }) => {
 export default FullStory;
 
 export const getStaticPaths = async () => {
-  try {
-    let docss = [];
-    const docRef = collection(db, 'stories');
-    const docSnap = await getDocs(docRef);
+  let docss = [];
+  const docRef = collection(db, 'stories');
+  const docSnap = await getDocs(docRef);
 
-    docSnap.docs.forEach((doc) => docss.push(doc.data()));
-    const paths = docss.map((data) => ({
-      params: { storySlug: data.slug },
-    }));
-    console.log(paths);
-    return {
-      paths,
-      fallback: false,
-    };
-  } catch (error) {
-    console.log(e);
-  }
+  docSnap.docs.forEach((doc) => docss.push(doc.data()));
+  const paths = docss.map((data) => ({
+    params: { storySlug: data.slug },
+  }));
+  return {
+    paths,
+    fallback: false,
+  };
 };
 
 export const getStaticProps = async ({ params }) => {
   const storySlug = params.storySlug;
 
   let story = {};
-  try {
-    const docRef = doc(db, 'stories', storySlug);
-    const docSnap = await getDoc(docRef);
-    story = docSnap.data();
-    return {
-      props: { story: JSON.stringify(story) },
-      revalidate: 60,
-    };
-  } catch (error) {
-    console.log(error);
-  }
+
+  const docRef = doc(db, 'stories', storySlug);
+  const docSnap = await getDoc(docRef);
+  story = docSnap.data();
+  return {
+    props: { story: JSON.stringify(story) || null },
+    revalidate: 60,
+  };
 };

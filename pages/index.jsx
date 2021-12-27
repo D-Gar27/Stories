@@ -35,6 +35,6 @@ export const getStaticProps = async () => {
   const stories = [];
   story.forEach((story) => stories.push(story.data()));
   return {
-    props: { stories: JSON.stringify(stories) },
+    props: { stories: JSON.stringify(stories) || null },
   };
 };

@@ -94,10 +94,10 @@ const CreateStory = () => {
           {selectedImage && (
             <Image
               src={selectedImage}
-              width={400}
-              height={400}
+              width={500}
+              height={300}
               alt=""
-              className="w-full max-w-sm rounded-md aspect-video"
+              className="w-full rounded-md aspect-video"
             />
           )}
           <input type="file" hidden id="file" onChange={addImagePreview} />
