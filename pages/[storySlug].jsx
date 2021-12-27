@@ -39,6 +39,7 @@ import Head from 'next/head';
 const FullStory = ({ story: storyData }) => {
   const story = JSON.parse(storyData);
   const router = useRouter();
+  if (router.isFallback) return null;
   const { storySlug } = router.query;
 
   const [commentToAdd, setCommentToAdd] = useState('');
@@ -378,7 +379,7 @@ export const getStaticPaths = async () => {
   }));
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 };
 
@@ -392,6 +393,6 @@ export const getStaticProps = async ({ params }) => {
   story = docSnap.data();
   return {
     props: { story: JSON.stringify(story) || null },
-    revalidate: 60,
+    revalidate: 100,
   };
 };
