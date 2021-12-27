@@ -39,7 +39,6 @@ import Head from 'next/head';
 const FullStory = ({ story: storyData }) => {
   const story = JSON.parse(storyData);
   const router = useRouter();
-  if (router.isFallback) return null;
   const { storySlug } = router.query;
 
   const [commentToAdd, setCommentToAdd] = useState('');
@@ -166,6 +165,7 @@ const FullStory = ({ story: storyData }) => {
 
   const timestamp = new Date(story?.timestamp.seconds * 1000);
 
+  if (router.isFallback) return null;
   return (
     <>
       <Head>
@@ -183,7 +183,7 @@ const FullStory = ({ story: storyData }) => {
           <Link href={{ pathname: '/' }} passHref>
             <div
               className="hover:brightness-125 cursor-pointer ease-out duration-200 scale-90 text-blue-500 flex items-center justify-center gap-3 border-2 border-blue-500 rounded-md py-1 px-3 mt-4 mb-4
-           max-w-[7rem] w-full"
+              max-w-[7rem] w-full"
             >
               <BsArrowLeft className="text-base font-bold" />{' '}
               <AiFillHome className="text-xl font-bold" />
