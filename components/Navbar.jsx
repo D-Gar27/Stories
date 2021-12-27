@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
 import { signInModalState } from '../atoms/signInModalAtom.js';
 import { signOutModalState } from '../atoms/SignOutModalAtom.js';
-import { useState } from 'react/cjs/react.development';
+import React, { useState } from 'react';
 
 const Navbar = () => {
   const router = useRouter();
@@ -93,7 +93,7 @@ const Navbar = () => {
         </div>
       </nav>
       <div
-        className={`flex items-center justify-center gap-6 flex-col ease-out duration-300 transition-all bg-white fixed h-[100vh] w-screen z-50 m-0 translate-x-full ${
+        className={`flex items-center justify-center gap-6 flex-col ease-out duration-00 transition-all bg-white fixed h-[100vh] w-screen z-50 m-0 translate-x-full ${
           menu ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
