@@ -17,7 +17,7 @@ import { ref, getDownloadURL, uploadString } from 'firebase/storage';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const createStory = () => {
+const CreateStory = () => {
   const [title, setTitle] = useState('');
   const [textBody, setTextBody] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
@@ -82,7 +82,7 @@ const createStory = () => {
   };
   return (
     <section className="w-screen min-h-screen flex justify-center items-center px-4 py-8 overflow-x-hidden">
-      <Link href={{ pathname: '/' }}>
+      <Link href={{ pathname: '/' }} passHref>
         <div className="hover:brightness-125 cursor-pointer ease-out duration-200 absolute md:top-5 md:left-5 scale-90 top-1 left-1 text-blue-500 flex items-center justify-center gap-3  border-2 border-blue-500 rounded-md py-1 px-3">
           <BsArrowLeft className="text-base font-bold" />{' '}
           <AiFillHome className="text-xl font-bold" />
@@ -145,4 +145,4 @@ const createStory = () => {
   );
 };
 
-export default createStory;
+export default CreateStory;

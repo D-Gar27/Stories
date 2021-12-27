@@ -76,6 +76,7 @@ const Story = ({ data }) => {
           href={{
             pathname: `/story/` + storySlug,
           }}
+          passHref
         >
           <h1 className="mt-4 font-semibold hover:underline ease-out duration-100 cursor-pointer">
             <i>{title}</i>

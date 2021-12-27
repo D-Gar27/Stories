@@ -34,7 +34,7 @@ import Link from 'next/link';
 import { AiFillHome } from 'react-icons/ai';
 import { BsArrowLeft } from 'react-icons/bs';
 
-const fullStory = () => {
+const FullStory = () => {
   const [story, setStory] = useState();
   const router = useRouter();
   const { storySlug } = router.query;
@@ -51,7 +51,7 @@ const fullStory = () => {
 
   const { data: user } = useSession();
 
-  // const [isSignnedIn, setIsSignnedIn] = useRecoilState(signInModalState);
+  const [isSignnedIn, setIsSignnedIn] = useRecoilState(signInModalState);
 
   useEffect(() => {
     let isMounted = true;
@@ -182,7 +182,7 @@ const fullStory = () => {
       <Navbar />
       <SignInModal />
       <section className="w-full max-w-xl md:max-w-2xl xl:max-w-4xl mx-auto mt-8 px-3">
-        <Link href={{ pathname: '/' }}>
+        <Link href={{ pathname: '/' }} passHref>
           <div
             className="hover:brightness-125 cursor-pointer ease-out duration-200 scale-90 text-blue-500 flex items-center justify-center gap-3 border-2 border-blue-500 rounded-md py-1 px-3 mt-4 mb-4
            max-w-[7rem] w-full"
@@ -361,4 +361,4 @@ const fullStory = () => {
   );
 };
 
-export default fullStory;
+export default FullStory;

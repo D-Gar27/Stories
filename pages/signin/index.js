@@ -6,7 +6,7 @@ import { AiOutlineLogin } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useRouter } from 'next/router';
 
-const singnin = ({ providers }) => {
+const Signin = ({ providers }) => {
   const [showMessage, setShowMessage] = useState(false);
   const [isSignIn, setIsSignIn] = useState(true);
 
@@ -224,4 +224,4 @@ export async function getServerSideProps() {
     },
   };
 }
-export default singnin;
+export default Signin;

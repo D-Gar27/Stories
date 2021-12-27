@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { AiFillHome } from 'react-icons/ai';
 import { BsArrowLeft } from 'react-icons/bs';
 
-const about = () => {
+const About = () => {
   const router = useRouter();
   return (
     <main className="flex justify-center items-center flex-col w-screen h-screen gap-[5rem] px-2 relative">
@@ -24,4 +24,4 @@ const about = () => {
   );
 };
 
-export default about;
+export default About;
