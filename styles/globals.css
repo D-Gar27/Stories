@@ -1,0 +1,38 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Ubuntu", sans-serif;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lobster&family=Ubuntu&display=swap");
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.lobster {
+  font-family: "Lobster", cursive;
+}
+
+.user-mini:hover > .user-cog {
+  transform: rotate(90deg);
+}
+
+@layer components {
+  .navlink {
+    @apply text-sm cursor-pointer text-blue-500 font-semibold hover:scale-110 ease-out transition-all;
+  }
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
