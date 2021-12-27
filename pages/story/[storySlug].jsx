@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Navbar from '../components/Navbar';
+import Navbar from '../../components/Navbar';
 import {
   FaRegHeart,
   FaRegCommentDots,
@@ -25,12 +25,12 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
-import { db } from '../firebase.js';
+import { db } from '../../firebase.js';
 import { useSession } from 'next-auth/react';
 import Moment from 'react-moment';
 import { useRecoilState } from 'recoil';
-import { signInModalState } from '../atoms/signInModalAtom';
-import SignInModal from '../components/SignInModal';
+import { signInModalState } from '../../atoms/signInModalAtom';
+import SignInModal from '../../components/SignInModal';
 import Link from 'next/link';
 import { AiFillHome } from 'react-icons/ai';
 import { BsArrowLeft } from 'react-icons/bs';

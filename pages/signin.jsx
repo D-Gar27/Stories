@@ -1,6 +1,6 @@
 import { getProviders, signIn } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
-import { signup } from '../../firebase';
+import { signup } from '../firebase';
 import Image from 'next/image';
 import { AiOutlineLogin } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';

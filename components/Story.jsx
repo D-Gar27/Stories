@@ -68,7 +68,7 @@ const Story = ({ data }) => {
         />
         <Link
           href={{
-            pathname: '/' + storySlug,
+            pathname: '/story/' + storySlug,
           }}
           passHref
         >
