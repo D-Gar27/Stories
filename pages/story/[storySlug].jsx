@@ -37,7 +37,9 @@ import { BsArrowLeft } from 'react-icons/bs';
 import Head from 'next/head';
 
 const FullStory = ({ story: storyData }) => {
-  const story = JSON.parse(JSON.stringify(storyData));
+  const storyCopy = JSON.parse(JSON.stringify(storyData));
+  const story = JSON.parse(storyCopy);
+
   const router = useRouter();
   const { storySlug } = router.query;
 
@@ -163,7 +165,7 @@ const FullStory = ({ story: storyData }) => {
     }
   };
 
-  const timestamp = new Date(story?.timestamp.seconds * 1000);
+  const timestamp = new Date(story?.timestamp?.seconds * 1000);
 
   if (router.isFallback) return null;
   return (
@@ -246,7 +248,7 @@ const FullStory = ({ story: storyData }) => {
             ></textarea>
           ) : (
             <>
-              {story?.textBody.includes('||') ? (
+              {story?.textBody?.includes('||') ? (
                 story.textBody.split('||').map((para, i) => {
                   return (
                     <p className="mt-2 font-medium" key={i}>
@@ -336,7 +338,7 @@ const FullStory = ({ story: storyData }) => {
                         fromNow
                         className="text-sm text-gray-500 font-medium"
                       >
-                        {timestamp?.toDate()}
+                        {timestamp && timestamp?.toDate()}
                       </Moment>
                     </div>
                   </div>
