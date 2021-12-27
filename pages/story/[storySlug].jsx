@@ -37,8 +37,13 @@ import { BsArrowLeft } from 'react-icons/bs';
 import Head from 'next/head';
 
 const FullStory = ({ story: storyData }) => {
-  const storyCopy = JSON.parse(JSON.stringify(storyData));
-  const story = JSON.parse(storyCopy);
+  let story;
+  if (storyData) {
+    const storyCopy = JSON.parse(JSON.stringify(storyData));
+    story = JSON.parse(storyCopy);
+  } else {
+    story = JSON.parse(null);
+  }
 
   const router = useRouter();
   const { storySlug } = router.query;
