@@ -9,14 +9,8 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase.js';
 
 const Story = ({ data }) => {
-  const {
-    username,
-    timestamp,
-    title,
-    slug: storySlug,
-    image,
-    userImg,
-  } = data.data();
+  const { username, title, slug: storySlug, image, userImg } = data;
+  const timestamp = new Date(data?.timestamp.seconds * 1000).toDateString();
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState([]);
 
@@ -60,8 +54,8 @@ const Story = ({ data }) => {
             />
             <p className="text-sm text-gray-700 font-bold">{username}</p>
           </div>
-          <Moment fromNow className="text-sm text-gray-500 mt-3">
-            {timestamp.toDate()}
+          <Moment fromNow className="text-sm text-gray-500 mt-3 sm:mt-0">
+            {timestamp}
           </Moment>
         </div>
         <Image
@@ -74,7 +68,7 @@ const Story = ({ data }) => {
         />
         <Link
           href={{
-            pathname: `/story/` + storySlug,
+            pathname: '/' + storySlug,
           }}
           passHref
         >

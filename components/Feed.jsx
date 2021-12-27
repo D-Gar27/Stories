@@ -2,7 +2,7 @@ import { useSession } from 'next-auth/react';
 import MiniProfile from './MiniProfile';
 import Stories from './Stories';
 
-const Feed = () => {
+const Feed = ({ stories }) => {
   const { data } = useSession();
   return (
     <main
@@ -11,7 +11,7 @@ const Feed = () => {
     >
       {/* Stories */}
       <section className="w-full col-span-2">
-        <Stories />
+        <Stories stories={stories} />
       </section>
       {/* Profile */}
       {data && (
