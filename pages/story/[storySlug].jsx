@@ -393,8 +393,14 @@ export const getStaticProps = async ({ params }) => {
   const docRef = doc(db, 'stories', storySlug);
   const docSnap = await getDoc(docRef);
   story = docSnap.data();
-  return {
-    props: { story: JSON.stringify(story) } || null,
-    revalidate: 100,
-  };
+  if (story) {
+    return {
+      props: { story: JSON.stringify(story) },
+      revalidate: 100,
+    };
+  } else {
+    return {
+      props: null,
+    };
+  }
 };
