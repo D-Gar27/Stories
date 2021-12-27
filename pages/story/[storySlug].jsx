@@ -37,7 +37,7 @@ import { BsArrowLeft } from 'react-icons/bs';
 import Head from 'next/head';
 
 const FullStory = ({ story: storyData }) => {
-  const story = JSON.parse(storyData);
+  const story = storyData.json();
   const router = useRouter();
   const { storySlug } = router.query;
 
@@ -392,7 +392,7 @@ export const getStaticProps = async ({ params }) => {
   const docSnap = await getDoc(docRef);
   story = docSnap.data();
   return {
-    props: { story: JSON.stringify(story) || null },
+    props: { story: JSON.stringify(story) } || null,
     revalidate: 100,
   };
 };
