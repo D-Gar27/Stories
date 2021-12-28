@@ -174,19 +174,6 @@ const FullStory = ({ story: storyData }) => {
 
   const timestamp = new Date(story?.timestamp?.seconds * 1000);
 
-  if (router.isFallback) {
-    return (
-      <>
-        <Head>
-          <title>Stories | Loading...</title>
-        </Head>
-        <main className="w-screen min-h-screen flex justify-center items-center">
-          <h1 className="text-xl font-semibold">Loading...</h1>
-        </main>
-      </>
-    );
-  }
-
   return (
     <>
       <Head>
@@ -400,7 +387,7 @@ export const getStaticPaths = async () => {
   }));
   return {
     paths,
-    fallback: true,
+    fallback: 'blocking',
   };
 };
 
@@ -412,6 +399,6 @@ export const getStaticProps = async ({ params }) => {
 
   return {
     props: { story: JSON.stringify(docSnap.data()) || null },
-    revalidate: 100,
+    revalidate: 60,
   };
 };
