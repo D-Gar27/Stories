@@ -38,7 +38,7 @@ import Head from 'next/head';
 
 export const getStaticPaths = async () => {
   let docss = [];
-  const docRef = collection(db, 'stories');
+  const docRef = query(collection(db, 'stories'), orderBy('timestamp', 'desc'));
   const docSnap = await getDocs(docRef);
 
   docSnap.docs.forEach((doc) => docss.push(doc.data()));
@@ -52,7 +52,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }) => {
   const storySlug = params.storySlug;
 
-  const docRef = doc(db, 'stories', storySlug);
+  const docRef = query(doc(db, 'stories', storySlug));
   const docSnap = await getDoc(docRef);
 
   if (!docSnap) {
