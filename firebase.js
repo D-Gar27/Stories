@@ -1,14 +1,14 @@
-import { getApp, getApps, initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { getApp, getApps, initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 import {
   getAuth,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-} from "firebase/auth";
-import { useEffect, useState } from "react";
+} from 'firebase/auth';
+import { useEffect, useState } from 'react';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIRE_API_KEY,
@@ -20,7 +20,7 @@ const firebaseConfig = {
 };
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const db = getFirestore();
+const db = getFirestore(app);
 const storage = getStorage();
 
 const auth = getAuth();
@@ -33,9 +33,10 @@ export const singinfirebase = (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
-export { app, db, storage };
 export const useAuth = () => {
   const [user, setUser] = useState();
   useEffect(() => onAuthStateChanged(auth, (user) => setUser(user)), []);
   return user;
 };
+
+export { app, db, storage };

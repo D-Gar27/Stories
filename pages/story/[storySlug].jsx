@@ -36,6 +36,33 @@ import { AiFillHome } from 'react-icons/ai';
 import { BsArrowLeft } from 'react-icons/bs';
 import Head from 'next/head';
 
+export const getStaticPaths = async () => {
+  let docss = [];
+  const docRef = collection(db, 'stories');
+  const docSnap = await getDocs(docRef);
+
+  docSnap.docs.forEach((doc) => docss.push(doc.data()));
+  const paths = docss.map((data) => ({
+    params: { storySlug: data.slug },
+  }));
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps = async ({ params }) => {
+  const storySlug = params.storySlug;
+
+  const docRef = doc(db, 'stories', storySlug);
+  const docSnap = await getDoc(docRef);
+
+  return {
+    props: { story: JSON.stringify(docSnap.data()) || null },
+    revalidate: 60,
+  };
+};
+
 const FullStory = ({ story: storyData }) => {
   let story;
   if (storyData) {
@@ -384,30 +411,3 @@ const FullStory = ({ story: storyData }) => {
 };
 
 export default FullStory;
-
-export const getStaticPaths = async () => {
-  let docss = [];
-  const docRef = collection(db, 'stories');
-  const docSnap = await getDocs(docRef);
-
-  docSnap.docs.forEach((doc) => docss.push(doc.data()));
-  const paths = docss.map((data) => ({
-    params: { storySlug: data.slug },
-  }));
-  return {
-    paths,
-    fallback: 'blocking',
-  };
-};
-
-export const getStaticProps = async ({ params }) => {
-  const storySlug = params.storySlug;
-
-  const docRef = doc(db, 'stories', storySlug);
-  const docSnap = await getDoc(docRef);
-
-  return {
-    props: { story: JSON.stringify(docSnap.data()) || null },
-    revalidate: 60,
-  };
-};
