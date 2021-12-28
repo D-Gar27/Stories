@@ -54,8 +54,8 @@ const FullStory = ({ story: storyData }) => {
   const [hasLiked, setHasLiked] = useState(false);
   const [editing, setEditing] = useState(false);
   const [toEdit, setToEdit] = useState({
-    title: '',
-    textBody: '',
+    title: story?.title,
+    textBody: story?.textBody,
   });
 
   const { data: user } = useSession();
