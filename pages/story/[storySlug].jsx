@@ -45,10 +45,8 @@ export const getStaticPaths = async () => {
   const paths = docss.map((data) => ({
     params: { storySlug: data.slug },
   }));
-  return {
-    paths,
-    fallback: 'blocking',
-  };
+
+  return { paths: paths, fallback: 'blocking' };
 };
 
 export const getStaticProps = async ({ params }) => {
@@ -57,13 +55,23 @@ export const getStaticProps = async ({ params }) => {
   const docRef = doc(db, 'stories', storySlug);
   const docSnap = await getDoc(docRef);
 
+  if (!docSnap) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: { story: JSON.stringify(docSnap.data()) || null },
-    revalidate: 60,
+    revalidate: 30,
   };
 };
 
 const FullStory = ({ story: storyData }) => {
+  const router = useRouter();
   let story;
   if (storyData) {
     const storyCopy = JSON.parse(JSON.stringify(storyData));
@@ -72,7 +80,6 @@ const FullStory = ({ story: storyData }) => {
     story = JSON.parse(null);
   }
 
-  const router = useRouter();
   const { storySlug } = router.query;
 
   const [commentToAdd, setCommentToAdd] = useState('');
@@ -211,197 +218,209 @@ const FullStory = ({ story: storyData }) => {
           />
         </Head>
 
-        <main className="w-screen min-h-screen overflow-x-hidden">
+        <main className={`w-screen min-h-screen overflow-x-hidden `}>
           <Navbar />
           <SignInModal />
-          <section className="w-full max-w-xl md:max-w-2xl xl:max-w-4xl mx-auto mt-8 px-3">
-            <Link href={{ pathname: '/' }} passHref>
-              <div
-                className="hover:brightness-125 cursor-pointer ease-out duration-200 scale-90 text-blue-500 flex items-center justify-center gap-3 border-2 border-blue-500 rounded-md py-1 px-3 mt-4 mb-4
-              max-w-[7rem] w-full"
-              >
-                <BsArrowLeft className="text-base font-bold" />{' '}
-                <AiFillHome className="text-xl font-bold" />
-              </div>
-            </Link>
-            {story?.image ? (
-              <Image
-                src={story.image}
-                width={200}
-                height={120}
-                layout="responsive"
-                alt="story"
-                className="aspect-video w-full max-w-lg rounded-md mx-auto"
-              />
-            ) : (
-              <div className="w-full rounded-md mx-auto h-[30rem] bg-blue-200 flex justify-center items-center font-bold text-xl">
-                Loading...
-              </div>
-            )}
-            <div className="flex w-full justify-between items-center mt-4">
-              <div className="flex items-center justify-start gap-2">
-                {story?.userImg && (
-                  <Image
-                    src={story.userImg}
-                    width={32}
-                    height={32}
-                    alt="user"
-                    className="rounded-full"
-                  />
-                )}
-                <p className="text-sm text-gray-700 font-bold">
-                  {story?.username}
-                </p>
-              </div>
-              <Moment fromNow className="text-gray-600">
-                {timestamp}
-              </Moment>
-            </div>
-            {editing ? (
-              <input
-                type="text"
-                onChange={(e) =>
-                  setToEdit({ ...toEdit, title: e.target.value })
-                }
-                value={toEdit?.title}
-                className="text-lg text-center font-semibold mt-4 mb-7 py-1 w-full text-black border-blue-500 border-2 rounded-md"
-              />
-            ) : (
-              <h1 className="text-xl text-center font-semibold mt-4 mb-7">
-                {story?.title}
+          {!story && (
+            <div className="w-full h-[calc(100vh_-_4rem)] grid place-items-center">
+              <h1 className="text-xl text-red-500 font-semibold">
+                Seem like no one has a story about that
               </h1>
-            )}
-
-            {editing ? (
-              <textarea
-                value={toEdit.textBody}
-                onChange={(e) =>
-                  setToEdit({ ...toEdit, textBody: e.target.value })
-                }
-                name=""
-                className="w-full min-h-[20rem] border-2 border-blue-500 rounded-md pl-2 pt-1"
-              ></textarea>
-            ) : (
-              <>
-                {story?.textBody?.includes('||') ? (
-                  story.textBody.split('||').map((para, i) => {
-                    return (
-                      <p className="mt-2 font-medium" key={i}>
-                        {para}
-                      </p>
-                    );
-                  })
-                ) : (
-                  <p className="mt-2 font-medium">{story?.textBody}</p>
-                )}
-              </>
-            )}
-
-            <div className="flex w-full mt-4 items-center justify-between">
-              <p
-                className="flex items-center gap-2 text-gray-500 text-lg"
-                onClick={addLikeToStory}
-              >
-                {hasLiked ? (
-                  <FaHeart className="text-red-500" />
-                ) : (
-                  <FaRegHeart />
-                )}{' '}
-                {likes.length}
-              </p>
-              {user && user?.user?.email === story?.email && (
-                <div className="flex items justify-center gap-3">
-                  {editing ? (
-                    <FaCheck
-                      onClick={updateStory}
-                      className="text-green-400 hover:text-green-500 text-xl cursor-pointer"
-                    />
-                  ) : (
-                    <FaEdit
-                      className="text-cyan-400 hover:text-cyan-500 text-xl cursor-pointer"
-                      onClick={() => setEditing(true)}
-                    />
-                  )}
-                  <FaTrash
-                    className="text-red-400 hover:text-red-500 text-lg cursor-pointer"
-                    onClick={deleteStory}
-                  />
-                  {editing && (
-                    <p
-                      onClick={() => setEditing(false)}
-                      className="text-red-400 hover:text-red-500 text-base cursor-pointer"
-                    >
-                      cancel
-                    </p>
-                  )}
+            </div>
+          )}
+          {story && (
+            <section className="w-full max-w-xl md:max-w-2xl xl:max-w-4xl mx-auto mt-8 px-3">
+              <Link href={{ pathname: '/' }} passHref>
+                <div
+                  className="hover:brightness-125 cursor-pointer ease-out duration-200 scale-90 text-blue-500 flex items-center justify-center gap-3 border-2 border-blue-500 rounded-md py-1 px-3 mt-4 mb-4
+              max-w-[7rem] w-full"
+                >
+                  <BsArrowLeft className="text-base font-bold" />{' '}
+                  <AiFillHome className="text-xl font-bold" />
+                </div>
+              </Link>
+              {story?.image ? (
+                <Image
+                  src={story.image}
+                  width={200}
+                  height={120}
+                  layout="responsive"
+                  alt="story"
+                  className="aspect-video w-full max-w-lg rounded-md mx-auto"
+                />
+              ) : (
+                <div className="w-full rounded-md mx-auto h-[30rem] bg-blue-200 flex justify-center items-center font-bold text-xl">
+                  Loading...
                 </div>
               )}
-              <p className="flex items-center gap-2 text-gray-500 text-lg">
-                <FaRegCommentDots /> {comments.length}
-              </p>
-            </div>
-            <section className="w-full mx-auto h-max bg-gray-50 p-6 my-6 relative">
-              {comments &&
-                comments.map((comment) => {
-                  const {
-                    username,
-                    userImg,
-                    comment: userComment,
-                    timestamp,
-                    email,
-                  } = comment.data();
-                  return (
-                    <div className="w-full mb-6 bg-white p-2" key={comment.id}>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center justify-start gap-2">
-                          {' '}
-                          <Image
-                            src={userImg}
-                            width={34}
-                            height={34}
-                            alt="user"
-                            className="rounded-full"
-                          />
-                          <p>{username}</p>
-                        </div>
-                        {user && email === user?.user?.email && (
-                          <FaTrash
-                            className="text-red-400 hover:text-red-500 text-lg cursor-pointer"
-                            onClick={() => deleteComment(comment.id)}
-                          />
-                        )}
-                      </div>
-                      <div className="flex items-center justify-between w-full px-4 mt-6">
-                        <p className="font-medium">{userComment}</p>
-                        <Moment
-                          fromNow
-                          className="text-sm text-gray-500 font-medium"
-                        >
-                          {timestamp && timestamp?.toDate()}
-                        </Moment>
-                      </div>
-                    </div>
-                  );
-                })}
-              <form className="flex items-center w-full max-w-[19.5rem] mx-auto justify-center border rounded-md border-blue-500 h-[2.75rem] gap-2 p-0">
+              <div className="flex w-full justify-between items-center mt-4">
+                <div className="flex items-center justify-start gap-2">
+                  {story?.userImg && (
+                    <Image
+                      src={story.userImg}
+                      width={32}
+                      height={32}
+                      alt="user"
+                      className="rounded-full"
+                    />
+                  )}
+                  <p className="text-sm text-gray-700 font-bold">
+                    {story?.username}
+                  </p>
+                </div>
+                <Moment fromNow className="text-gray-600">
+                  {timestamp}
+                </Moment>
+              </div>
+              {editing ? (
                 <input
                   type="text"
-                  value={commentToAdd}
-                  onChange={(e) => setCommentToAdd(e.target.value)}
-                  name="comment"
-                  placeholder="Your thoughts for this story"
-                  className="w-full bg-transparent max-w-[15rem] outline-none pl-2"
-                  required
+                  onChange={(e) =>
+                    setToEdit({ ...toEdit, title: e.target.value })
+                  }
+                  value={toEdit?.title}
+                  className="text-lg text-center font-semibold mt-4 mb-7 py-1 w-full text-black border-blue-500 border-2 rounded-md"
                 />
-                <button
-                  onClick={addCommentToStory}
-                  className="h-[2.75rem] text-white font-bold hover:text-blue-500 hover:bg-transparent ease-out duration-200 transition-all text-base rounded-tr-md rounded-br-md border-l-2 border-blue-500 bg-blue-500 w-full max-w-[4rem] flex justify-center items-center"
+              ) : (
+                <h1 className="text-xl text-center font-semibold mt-4 mb-7">
+                  {story?.title}
+                </h1>
+              )}
+
+              {editing ? (
+                <textarea
+                  value={toEdit.textBody}
+                  onChange={(e) =>
+                    setToEdit({ ...toEdit, textBody: e.target.value })
+                  }
+                  name=""
+                  className="w-full min-h-[20rem] border-2 border-blue-500 rounded-md pl-2 pt-1"
+                ></textarea>
+              ) : (
+                <>
+                  {story?.textBody?.includes('||') ? (
+                    story.textBody.split('||').map((para, i) => {
+                      return (
+                        <p className="mt-2 font-medium" key={i}>
+                          {para}
+                        </p>
+                      );
+                    })
+                  ) : (
+                    <p className="mt-2 font-medium">{story?.textBody}</p>
+                  )}
+                </>
+              )}
+
+              <div className="flex w-full mt-4 items-center justify-between">
+                <p
+                  className="flex items-center gap-2 text-gray-500 text-lg"
+                  onClick={addLikeToStory}
                 >
-                  <FaPaperPlane />
-                </button>
-              </form>
+                  {hasLiked ? (
+                    <FaHeart className="text-red-500" />
+                  ) : (
+                    <FaRegHeart />
+                  )}{' '}
+                  {likes.length}
+                </p>
+                {user && user?.user?.email === story?.email && (
+                  <div className="flex items justify-center gap-3">
+                    {editing ? (
+                      <FaCheck
+                        onClick={updateStory}
+                        className="text-green-400 hover:text-green-500 text-xl cursor-pointer"
+                      />
+                    ) : (
+                      <FaEdit
+                        className="text-cyan-400 hover:text-cyan-500 text-xl cursor-pointer"
+                        onClick={() => setEditing(true)}
+                      />
+                    )}
+                    <FaTrash
+                      className="text-red-400 hover:text-red-500 text-lg cursor-pointer"
+                      onClick={deleteStory}
+                    />
+                    {editing && (
+                      <p
+                        onClick={() => setEditing(false)}
+                        className="text-red-400 hover:text-red-500 text-base cursor-pointer"
+                      >
+                        cancel
+                      </p>
+                    )}
+                  </div>
+                )}
+                <p className="flex items-center gap-2 text-gray-500 text-lg">
+                  <FaRegCommentDots /> {comments.length}
+                </p>
+              </div>
+              <section className="w-full mx-auto h-max bg-gray-50 p-6 my-6 relative">
+                {comments &&
+                  comments.map((comment) => {
+                    const {
+                      username,
+                      userImg,
+                      comment: userComment,
+                      timestamp,
+                      email,
+                    } = comment.data();
+                    return (
+                      <div
+                        className="w-full mb-6 bg-white p-2"
+                        key={comment.id}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-start gap-2">
+                            {' '}
+                            <Image
+                              src={userImg}
+                              width={34}
+                              height={34}
+                              alt="user"
+                              className="rounded-full"
+                            />
+                            <p>{username}</p>
+                          </div>
+                          {user && email === user?.user?.email && (
+                            <FaTrash
+                              className="text-red-400 hover:text-red-500 text-lg cursor-pointer"
+                              onClick={() => deleteComment(comment.id)}
+                            />
+                          )}
+                        </div>
+                        <div className="flex items-center justify-between w-full px-4 mt-6">
+                          <p className="font-medium">{userComment}</p>
+                          <Moment
+                            fromNow
+                            className="text-sm text-gray-500 font-medium"
+                          >
+                            {timestamp && timestamp?.toDate()}
+                          </Moment>
+                        </div>
+                      </div>
+                    );
+                  })}
+                <form className="flex items-center w-full max-w-[19.5rem] mx-auto justify-center border rounded-md border-blue-500 h-[2.75rem] gap-2 p-0">
+                  <input
+                    type="text"
+                    value={commentToAdd}
+                    onChange={(e) => setCommentToAdd(e.target.value)}
+                    name="comment"
+                    placeholder="Your thoughts for this story"
+                    className="w-full bg-transparent max-w-[15rem] outline-none pl-2"
+                    required
+                  />
+                  <button
+                    onClick={addCommentToStory}
+                    className="h-[2.75rem] text-white font-bold hover:text-blue-500 hover:bg-transparent ease-out duration-200 transition-all text-base rounded-tr-md rounded-br-md border-l-2 border-blue-500 bg-blue-500 w-full max-w-[4rem] flex justify-center items-center"
+                  >
+                    <FaPaperPlane />
+                  </button>
+                </form>
+              </section>
             </section>
-          </section>
+          )}
         </main>
       </>
     );
