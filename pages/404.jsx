@@ -4,7 +4,7 @@ const NotFound = () => {
   return (
     <main className="w-screen h-screen bg-white flex justify-center items-center flex-col gap-6">
       <h1 className="text-red-500 text-6xl md:text-7xl font-bold">404</h1>
-      <h3 className="font-semibold text-xl">
+      <h3 className="font-semibold text-xl text-center">
         Looks like we need to make a page for this one
       </h3>
       <Link href={'/'} passHref>

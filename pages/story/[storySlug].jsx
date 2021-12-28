@@ -63,27 +63,29 @@ const FullStory = ({ story: storyData }) => {
   const [isSignnedIn, setIsSignnedIn] = useRecoilState(signInModalState);
 
   useEffect(() => {
-    if (router.isReady) {
-      return onSnapshot(
-        query(
-          collection(db, 'stories', storySlug, 'comments'),
-          orderBy('timestamp', 'desc')
-        ),
-        (snapshot) => setComments(snapshot.docs)
-      );
+    if (!router.isReady) {
+      return;
     }
+    return onSnapshot(
+      query(
+        collection(db, 'stories', storySlug, 'comments'),
+        orderBy('timestamp', 'desc')
+      ),
+      (snapshot) => setComments(snapshot.docs)
+    );
   }, [router.isReady, storySlug]);
 
   useEffect(() => {
-    if (router.isReady) {
-      return onSnapshot(
-        query(
-          collection(db, 'stories', storySlug, 'likes'),
-          orderBy('timestamp', 'desc')
-        ),
-        (snapshot) => setLikes(snapshot.docs)
-      );
+    if (!router.isReady) {
+      return;
     }
+    return onSnapshot(
+      query(
+        collection(db, 'stories', storySlug, 'likes'),
+        orderBy('timestamp', 'desc')
+      ),
+      (snapshot) => setLikes(snapshot.docs)
+    );
   }, [router.isReady, storySlug]);
 
   useEffect(() => {
@@ -172,14 +174,26 @@ const FullStory = ({ story: storyData }) => {
 
   const timestamp = new Date(story?.timestamp?.seconds * 1000);
 
-  if (router.isFallback) return null;
+  if (router.isFallback) {
+    return (
+      <>
+        <Head>
+          <title>Stories | Loading...</title>
+        </Head>
+        <main className="w-screen min-h-screen flex justify-center items-center">
+          <h1 className="text-xl font-semibold">Loading...</h1>
+        </main>
+      </>
+    );
+  }
+
   return (
     <>
       <Head>
         <title>Stories | {story?.title}</title>
         <meta
           name="description"
-          content="Stories is a simple blog made for people who want to share their stories with the world"
+          content={`${story?.title} by ${story?.username}`}
         />
       </Head>
 
@@ -196,7 +210,7 @@ const FullStory = ({ story: storyData }) => {
               <AiFillHome className="text-xl font-bold" />
             </div>
           </Link>
-          {story.image ? (
+          {story?.image ? (
             <Image
               src={story.image}
               width={200}
@@ -393,19 +407,11 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }) => {
   const storySlug = params.storySlug;
 
-  let story = {};
-
   const docRef = doc(db, 'stories', storySlug);
   const docSnap = await getDoc(docRef);
-  story = docSnap.data();
-  if (story) {
-    return {
-      props: { story: JSON.stringify(story) },
-      revalidate: 100,
-    };
-  } else {
-    return {
-      props: null,
-    };
-  }
+
+  return {
+    props: { story: JSON.stringify(docSnap.data()) || null },
+    revalidate: 100,
+  };
 };

@@ -38,7 +38,7 @@ const Navbar = () => {
               onClick={() => router.push('/')}
             />
             <div className="hidden md:flex items-center gap-5">
-              <p
+              <a
                 className="navlink"
                 onClick={() => {
                   if (data) {
@@ -50,8 +50,8 @@ const Navbar = () => {
                 }}
               >
                 Create
-              </p>
-              <p
+              </a>
+              <a
                 className="navlink"
                 onClick={() => {
                   if (data) {
@@ -63,7 +63,7 @@ const Navbar = () => {
                 }}
               >
                 About
-              </p>
+              </a>
             </div>
             {data ? (
               <div onClick={() => setIsSignningOut(true)}>
@@ -101,7 +101,7 @@ const Navbar = () => {
           className="navlink absolute top-3 left-3 text-2xl font-semibold"
           onClick={() => setMenu(false)}
         />
-        <p
+        <a
           className="navlink !text-base"
           onClick={() => {
             if (data) {
@@ -113,8 +113,8 @@ const Navbar = () => {
           }}
         >
           Create
-        </p>
-        <p
+        </a>
+        <a
           className="navlink !text-base"
           onClick={() => {
             if (data) {
@@ -126,7 +126,7 @@ const Navbar = () => {
           }}
         >
           About
-        </p>
+        </a>
       </div>
     </>
   );

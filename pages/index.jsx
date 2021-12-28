@@ -5,8 +5,19 @@ import SignInModal from '../components/SignInModal';
 import ProfileModal from '../components/ProfileModal';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase';
+import { useEffect, useState } from 'react';
 
-export default function Home({ stories }) {
+export default function Home() {
+  const [stories, setStories] = useState([]);
+  useEffect(() => {
+    const fetchStories = async () => {
+      const q = query(collection(db, 'stories'), orderBy('timestamp', 'desc'));
+      const docSnap = await getDocs(q);
+      const tempStories = docSnap.docs.map((story) => story.data());
+      setStories(tempStories);
+    };
+    fetchStories();
+  }, []);
   return (
     <div className="scrollbar-thin scrollbar-track-black">
       <Head>
@@ -18,7 +29,7 @@ export default function Home({ stories }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <Feed stories={JSON.parse(stories)} />
+      <Feed stories={stories} />
 
       {/* Is User Signned In Modal */}
       <SignInModal />
@@ -26,15 +37,3 @@ export default function Home({ stories }) {
     </div>
   );
 }
-
-export const getStaticProps = async () => {
-  let story = [];
-  const q = query(collection(db, 'stories'), orderBy('timestamp', 'desc'));
-  const docSnap = await getDocs(q);
-  story = docSnap.docs;
-  const stories = [];
-  story.forEach((story) => stories.push(story.data()));
-  return {
-    props: { stories: JSON.stringify(stories) || null },
-  };
-};
